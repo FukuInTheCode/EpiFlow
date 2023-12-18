@@ -1,5 +1,25 @@
 #!/bin/bash
 
+if ! command -v docker &> /dev/null; then
+    if command -v pacman &> /dev/null; then
+        sudo pacman -Syu docker
+    elif command -v dnf; then
+        sudo dnf install docker
+    elif command -v apt; then
+        sudo apt update
+        sudo apt install docker.io
+    fi
+fi
+
+if ! systemctl is-active --quiet docker; then
+    sudo systemctl start docker
+    sudo systemctl enable docker
+fi
+
+if ! groups $USER | grep &> /dev/null "\bdocker\b"; then
+    sudo usermod -aG docker $USER
+fi
+
 if docker inspect epiflow-docker &> /dev/null; then
     docker run epiflow-docker
 else
