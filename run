@@ -1,0 +1,11 @@
+#!/bin/bash
+
+if docker inspect epiflow-docker &> /dev/null; then
+    docker run epiflow-docker
+else
+    docker build . -t epiflow-docker &> /dev/null
+    docker run epiflow-docker
+fi
+
+docker stop epiflow-docker &> /dev/null
+docker rm epiflow-docker &> /dev/null || true
